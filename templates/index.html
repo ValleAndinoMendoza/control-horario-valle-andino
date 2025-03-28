@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Control Horario Valle Andino</title>
+</head>
+<body>
+    <h2>Registro de entrada/salida empleados</h2>
+    <form method="POST">
+        <select name="empleado" required>
+            {% for empleado in empleados %}
+                <option value="{{ empleado[0] }}">{{ empleado[1] }}</option>
+            {% endfor %}
+        </select><br><br>
+        <select name="tipo_registro">
+            <option value="entrada">Entrada</option>
+            <option value="salida">Salida</option>
+        </select><br><br>
+        <button type="submit">Registrar</button>
+    </form>
+</body>
+</html>
