@@ -1,21 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Control Horario Valle Andino</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Horarios - Valle Andino</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h2>Registro de entrada/salida empleados</h2>
-    <form method="POST">
-        <select name="empleado" required>
-            {% for empleado in empleados %}
-                <option value="{{ empleado[0] }}">{{ empleado[1] }}</option>
-            {% endfor %}
-        </select><br><br>
-        <select name="tipo_registro">
-            <option value="entrada">Entrada</option>
-            <option value="salida">Salida</option>
-        </select><br><br>
-        <button type="submit">Registrar</button>
-    </form>
+
+    <div class="container">
+        <h1>Registro de Entrada/Salida de Empleados</h1>
+
+        <form action="/" method="POST">
+            <label for="empleado">Selecciona tu nombre:</label>
+            <select name="empleado" id="empleado" required>
+                {% for emp in empleados %}
+                    <option value="{{ emp[0] }}">{{ emp[1] }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="tipo_registro">Tipo de Registro:</label>
+            <div class="botones">
+                <button type="submit" name="tipo_registro" value="entrada" class="btn entrada">Entrada</button>
+                <button type="submit" name="tipo_registro" value="salida" class="btn salida">Salida</button>
+            </div>
+        </form>
+
+        <h2>Últimos Registros</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Fecha y Hora</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{ registro[0] }}</td>
+                    <td>{{ registro[1] }}</td>
+                    <td class="{{ 'entrada' if registro[2] == 'entrada' else 'salida' }}">{{ registro[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </body>
 </html>
