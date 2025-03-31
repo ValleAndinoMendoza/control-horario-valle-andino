@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h2 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    .total {
+      font-weight: bold;
+      background: #e0ffe0;
+    }
+  </style>
+</head>
+<body>
+  <h2>🧾 Reporte Semanal de Horas Trabajadas</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Empleado</th>
+        <th>Total Horas</th>
+        <th>Valor por Hora</th>
+        <th>Total a Pagar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for empleado in resumen %}
+      <tr>
+        <td>{{ empleado['nombre'] }}</td>
+        <td>{{ empleado['horas'] }}</td>
+        <td>${{ empleado['valor_hora'] }}</td>
+        <td class="total">${{ empleado['total'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
