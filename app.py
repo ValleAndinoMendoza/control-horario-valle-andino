@@ -129,6 +129,3 @@ def exportar_excel():
         df.to_excel(writer, index=False, sheet_name='Reporte Semanal')
     output.seek(0)
     return send_file(output, as_attachment=True, download_name='reporte_semanal.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
-if __name__ == '__main__':
-    app.run(debug=True)
