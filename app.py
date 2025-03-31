@@ -58,3 +58,16 @@ def admin():
 
     conn.close()
     return render_template('admin.html', resumen=resumen)
+@app.route('/admin')
+def admin():
+    conn = sqlite3.connect('empleados.db')
+    c = conn.cursor()
+    registros = c.execute('''
+        SELECT e.nombre, r.fecha_hora, r.tipo_registro
+        FROM registros_horarios r
+        JOIN empleados e ON r.id_empleado = e.id
+        ORDER BY r.fecha_hora DESC
+        LIMIT 20
+    ''').fetchall()
+    conn.close()
+    return render_template('admin.html', registros=registros)
