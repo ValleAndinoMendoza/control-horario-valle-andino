@@ -3,8 +3,7 @@ services:
     name: control-horario-valle-andino
     env: python
     buildCommand: ""
-    startCommand: "python app.py"
+    startCommand: "gunicorn app:app"
     envVars:
       - key: PYTHON_VERSION
         value: 3.10
-
