@@ -1,1 +1,10 @@
+services:
+  - type: web
+    name: control-horario-valle-andino
+    env: python
+    buildCommand: ""
+    startCommand: "python app.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10
 
