@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Registro</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f0f0f0;
+            padding: 30px;
+        }
+        .formulario {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            margin: auto;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        label, input, select {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="formulario">
+        <h2>Editar Registro</h2>
+        <form method="POST">
+            <label for="fecha_hora">Fecha y Hora (YYYY-MM-DD HH:MM:SS):</label>
+            <input type="text" id="fecha_hora" name="fecha_hora" value="{{ registro[1] }}" required>
+
+            <label for="tipo_registro">Tipo de Registro:</label>
+            <select id="tipo_registro" name="tipo_registro">
+                <option value="entrada" {% if registro[2] == 'entrada' %}selected{% endif %}>Entrada</option>
+                <option value="salida" {% if registro[2] == 'salida' %}selected{% endif %}>Salida</option>
+            </select>
+
+            <button type="submit">Guardar Cambios</button>
+        </form>
+    </div>
+</body>
+</html>
