@@ -50,7 +50,6 @@ def admin():
                      ORDER BY fecha_hora ASC''', (id_emp, fecha_desde, fecha_hasta))
         registros = c.fetchall()
 
-        dia_actual = None
         entrada = None
         total_por_dia = []
 
