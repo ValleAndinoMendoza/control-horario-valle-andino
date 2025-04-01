@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, send_file
 import sqlite3
 from datetime import datetime, timedelta
@@ -128,3 +129,4 @@ def exportar_excel():
         df.to_excel(writer, index=False, sheet_name='Reporte Semanal')
     output.seek(0)
     return send_file(output, as_attachment=True, download_name='reporte_semanal.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+app = app
