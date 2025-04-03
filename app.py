@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, send_file
 import sqlite3
 from datetime import datetime, timedelta
@@ -7,27 +6,27 @@ import io
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     conn = sqlite3.connect('empleados.db')
     c = conn.cursor()
+
+    if request.method == 'POST':
+        id_empleado = request.form['empleado']
+        tipo = request.form['tipo_registro']
+        fecha_hora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        c.execute('INSERT INTO registros_horarios (id_empleado, tipo_registro, fecha_hora) VALUES (?, ?, ?)',
+                  (id_empleado, tipo, fecha_hora))
+        conn.commit()
+
     empleados = c.execute('SELECT * FROM empleados').fetchall()
+    registros = c.execute('''SELECT e.nombre, r.fecha_hora, r.tipo_registro
+                             FROM registros_horarios r
+                             JOIN empleados e ON r.id_empleado = e.id
+                             ORDER BY r.fecha_hora DESC
+                             LIMIT 20''').fetchall()
     conn.close()
-    return render_template('index.html', empleados=empleados)
-
-@app.route('/registro', methods=['POST'])
-def registrar():
-    id_empleado = request.form['empleado']
-    tipo = request.form['tipo_registro']
-    fecha_hora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-    conn = sqlite3.connect('empleados.db')
-    c = conn.cursor()
-    c.execute('INSERT INTO registros_horarios (id_empleado, tipo_registro, fecha_hora) VALUES (?, ?, ?)',
-              (id_empleado, tipo, fecha_hora))
-    conn.commit()
-    conn.close()
-    return redirect('/')
+    return render_template('index.html', empleados=empleados, registros=registros)
 
 @app.route('/admin')
 def admin():
@@ -129,4 +128,7 @@ def exportar_excel():
         df.to_excel(writer, index=False, sheet_name='Reporte Semanal')
     output.seek(0)
     return send_file(output, as_attachment=True, download_name='reporte_semanal.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-app = app
+
+# SOLO si lo ejecutás localmente
+if __name__ == '__main__':
+    app.run(debug=True)
