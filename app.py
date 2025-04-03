@@ -20,11 +20,15 @@ def index():
         conn.commit()
 
     empleados = c.execute('SELECT * FROM empleados').fetchall()
-    registros = c.execute('''SELECT e.nombre, r.fecha_hora, r.tipo_registro
-                             FROM registros_horarios r
-                             JOIN empleados e ON r.id_empleado = e.id
-                             ORDER BY r.fecha_hora DESC
-                             LIMIT 20''').fetchall()
+
+    registros = c.execute('''
+        SELECT e.nombre, r.fecha_hora, r.tipo_registro
+        FROM registros_horarios r
+        JOIN empleados e ON r.id_empleado = e.id
+        ORDER BY r.fecha_hora DESC
+        LIMIT 10
+    ''').fetchall()
+
     conn.close()
     return render_template('index.html', empleados=empleados, registros=registros)
 
@@ -129,6 +133,5 @@ def exportar_excel():
     output.seek(0)
     return send_file(output, as_attachment=True, download_name='reporte_semanal.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
-# SOLO si lo ejecutás localmente
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
