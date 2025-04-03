@@ -112,25 +112,55 @@ def editar(id):
 def exportar_excel():
     conn = sqlite3.connect('empleados.db')
     c = conn.cursor()
+    
     hoy = datetime.now()
     lunes = hoy - timedelta(days=hoy.weekday())
     domingo = lunes + timedelta(days=6)
     fecha_desde = lunes.strftime('%Y-%m-%d 00:00:00')
     fecha_hasta = domingo.strftime('%Y-%m-%d 23:59:59')
 
-    c.execute('''SELECT e.nombre, r.fecha_hora, r.tipo_registro
-                 FROM registros_horarios r
-                 JOIN empleados e ON r.id_empleado = e.id
-                 WHERE r.fecha_hora BETWEEN ? AND ?
-                 ORDER BY r.fecha_hora ASC''', (fecha_desde, fecha_hasta))
-    rows = c.fetchall()
+    c.execute("SELECT id, nombre, valor_hora FROM empleados")
+    empleados = c.fetchall()
+
+    data = []  # 🔧 ESTO ES LO QUE FALTABA
+
+    for emp in empleados:
+        id_emp, nombre, valor_hora = emp
+        c.execute('''SELECT fecha_hora, tipo_registro FROM registros_horarios
+                     WHERE id_empleado = ? AND fecha_hora BETWEEN ? AND ?
+                     ORDER BY fecha_hora ASC''', (id_emp, fecha_desde, fecha_hasta))
+        registros = c.fetchall()
+
+        entrada = None
+        for reg in registros:
+            fecha = datetime.strptime(reg[0], '%Y-%m-%d %H:%M:%S')
+            tipo = reg[1]
+            if tipo == 'entrada':
+                entrada = fecha
+            elif tipo == 'salida' and entrada:
+                diff = fecha - entrada
+                horas = round(diff.total_seconds() / 3600, 2)
+                total = round(horas * valor_hora, 2)
+                data.append({
+                    'Empleado': nombre,
+                    'Día': entrada.strftime('%d/%m/%Y'),
+                    'Entrada': entrada.strftime('%H:%M'),
+                    'Salida': fecha.strftime('%H:%M'),
+                    'Total Horas': '{:02.0f}:{:02.0f}'.format(*divmod(horas * 60, 60)),
+                    'Valor Hora': f"${valor_hora:,.2f}",
+                    'Total a Pagar': f"${total:,.2f}"
+                })
+                entrada = None
+
     conn.close()
 
-    df = pd.DataFrame(rows, columns=['Empleado', 'Fecha y Hora', 'Tipo'])
+    df = pd.DataFrame(data, columns=['Empleado', 'Día', 'Entrada', 'Salida', 'Total Horas', 'Valor Hora', 'Total a Pagar'])
+
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Reporte Semanal')
     output.seek(0)
+    
     return send_file(output, as_attachment=True, download_name='reporte_semanal.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 if __name__ == '__main__':
