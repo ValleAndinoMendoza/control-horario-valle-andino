@@ -11,8 +11,7 @@
     <div class="container">
         <h1>Registro de Entrada/Salida de Empleados</h1>
 
-        <!-- ✅ El método debe ser POST y la acción debe ir a /registro -->
-        <form action="/registro" method="POST">
+        <form action="/" method="POST">
             <label for="empleado">Selecciona tu nombre:</label>
             <select name="empleado" id="empleado" required>
                 {% for emp in empleados %}
@@ -50,4 +49,3 @@
 
 </body>
 </html>
-Corrijo el formulario de registro de entrada/salida
