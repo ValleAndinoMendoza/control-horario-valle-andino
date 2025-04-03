@@ -3,6 +3,7 @@ import sqlite3
 from datetime import datetime, timedelta
 import pandas as pd
 import io
+import os  # 👈 Importamos os para leer la variable de entorno PORT
 
 app = Flask(__name__)
 
@@ -122,7 +123,7 @@ def exportar_excel():
     c.execute("SELECT id, nombre, valor_hora FROM empleados")
     empleados = c.fetchall()
 
-    data = []  # 🔧 ESTO ES LO QUE FALTABA
+    data = []
 
     for emp in empleados:
         id_emp, nombre, valor_hora = emp
@@ -163,5 +164,7 @@ def exportar_excel():
     
     return send_file(output, as_attachment=True, download_name='reporte_semanal.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+# ✅ Esta parte es CLAVE para que Render use bien el puerto asignado
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
